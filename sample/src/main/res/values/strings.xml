@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">NoFragment</string>
+    <string name="ok">好的</string>
+
+    <string name="title_fragment_main">MainFragment</string>
+    <string name="button_menu_more">溢出菜单</string>
+    <string name="button_argument">传参数</string>
+    <string name="button_for_result">StartFragmentForResult</string>
+    <string name="button_stack">不保存回退栈</string>
+
+    <string name="item_title">我是标题</string>
+    <string name="item_content">我是内容</string>
+
+    <string name="intercept_close">拦截关闭按钮点击事件</string>
+    <string name="action_settings">设置</string>
+    <string name="action_exit">退出</string>
+
+    <string name="title_fragment_setting">MoreMenuFragment</string>
+    <string name="no_intercept_close">不拦截关闭</string>
+    <string name="action_add_friend">添加</string>
+    <string name="action_mood">心情</string>
+    <string name="action_satisfied">开心</string>
+    <string name="action_dissatisfied">难过</string>
+    <string name="action_neutral">一般</string>
+
+    <string name="title_fragment_argument">ArgumentFragment</string>
+
+    <string name="title_fragment_result">StartResultFragment</string>
+    <string name="result">结果</string>
+    <string name="hint_input">返回数据</string>
+    <string name="button_back">返回</string>
+    <string name="message_canceled">取消了操作</string>
+    <string name="message_null">您没有填写返回内容</string>
+
+    <string name="title_fragment_stack">StackFragment</string>
+    <string name="button_stack_new">打开新的Fragment</string>
+    <string name="hint_back_stack">等下返回的时候看不到我了就。</string>
+
+    <string name="title_fragment_stack_new">StackNewFragment</string>
+    <string name="hint_back_stack_new">返回的时候看不到调用我的页面。</string>
+
+</resources>

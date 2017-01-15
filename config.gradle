@@ -1,0 +1,31 @@
+ext {
+    plugins = [
+            library    : 'com.android.library',
+            application: 'com.android.application',
+            maven      : 'com.github.dcendents.android-maven',
+            bintray    : 'com.jfrog.bintray'
+    ]
+
+    android = [
+            // build.
+            compileSdkVersion: 25,
+            buildToolsVersion: "25.0.2",
+
+            // defaultConfig.
+            applicationId    : "com.yanzhenjie.fragment.sample",
+            minSdkVersion    : 14,
+            targetSdkVersion : 25,
+            versionCode      : 10,
+            versionName      : "1.0",
+    ]
+
+    dependencies = [
+            // android-support
+            design     : 'com.android.support:design:25.1.0',
+            appcompat  : 'com.android.support:appcompat-v7:25.1.0',
+            permission : 'com.yanzhenjie:permission:1.0.4',
+            fragment   : 'com.yanzhenjie:fragment:1.0.0',
+            alertdialog: 'com.yanzhenjie.alertdialog:alertdialog:1.0.0'
+    ]
+
+}

@@ -1,0 +1,36 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_add_friend"
+        android:icon="@drawable/ic_person_add_white"
+        android:orderInCategory="100"
+        android:title="@string/action_add_friend"
+        app:showAsAction="always|withText"/>
+    <item
+        android:icon="@drawable/ic_more_white"
+        android:orderInCategory="100"
+        android:title="@string/action_mood"
+        app:showAsAction="always|withText">
+        <menu>
+            <item
+                android:id="@+id/action_satisfied"
+                android:icon="@drawable/ic_sentiment_satisfied_black"
+                android:orderInCategory="100"
+                android:title="@string/action_satisfied"
+                app:showAsAction="always|withText"/>
+            <item
+                android:id="@+id/action_dissatisfied"
+                android:icon="@drawable/ic_sentiment_dissatisfied_black"
+                android:orderInCategory="100"
+                android:title="@string/action_dissatisfied"
+                app:showAsAction="always|withText"/>
+            <item
+                android:id="@+id/action_neutral"
+                android:icon="@drawable/ic_sentiment_neutral_black"
+                android:orderInCategory="100"
+                android:title="@string/action_neutral"
+                app:showAsAction="always|withText"/>
+        </menu>
+    </item>
+</menu>
