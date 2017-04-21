@@ -86,7 +86,7 @@ public class MainFragment extends NoFragment implements View.OnClickListener {
                 bundle.putString("meme", "么么哒");
 
                 // Create fragment_menu for bundle.
-                NoFragment fragment = NoFragment.instantiate(getContext(), ArgumentFragment.class, bundle);
+                NoFragment fragment = fragment(ArgumentFragment.class, bundle);
 
                 startFragment(fragment);
                 break;

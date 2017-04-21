@@ -18,14 +18,14 @@
 # 使用方法
 * Gradle一句话远程依赖
 ```groovy
-compile 'com.yanzhenjie:fragment:1.0.0'
+compile 'com.yanzhenjie:fragment:1.0.1'
 ```
 * Maven:
 ```xml
 <dependency>
   <groupId>com.yanzhenjie</groupId>
   <artifactId>fragment</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -74,7 +74,7 @@ public class MainActivity extends CompatActivity {
 }
 ```
 
-之后在Fragment中互相跳转，你可以不同管物理Back键被按下之类的：
+之后在Fragment中互相跳转，你可以不用管物理Back键被按下之类的：
 
 ## 一、以`standard`模式启动一个`Fragment`
 ```java
@@ -84,7 +84,7 @@ startFragment(MoreMenuFragment.class);
 ## 二、以`startActivityForResult()`方式启动一个`Fragment`
 ```java
 // 启动，等待回调结果。
-startFragmentForResquest(StartResultFragment.class, 100);
+startFragmentForResult(StartResultFragment.class, 100);
 
 // 不论怎样回来都会回调onFragmentResult()。
 @Override
@@ -121,12 +121,8 @@ bundle.putString("meng", "萌萌哒");
 bundle.putString("bang", "棒棒哒");
 bundle.putString("meme", "么么哒");
 
-// 第一种：
-NoFragment fragment = NoFragment.instantiate(getContext(), ArgumentFragment.class, bundle);
-
-// 第二种：
-ArgumentFragment fragment = new ArgumentFragment();
-fragment.setArgument(bundle);
+// 在Activity中或者Fragment调用此方法：  
+NoFragment fragment = fragment(ArgumentFragment.class, bundle);
 
 // 最后启动：
 startFragment(fragment);

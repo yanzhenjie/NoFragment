@@ -40,14 +40,62 @@ public class NoFragment extends Fragment {
 
     private static final int REQUEST_CODE_INVALID = CompatActivity.REQUEST_CODE_INVALID;
 
+    /**
+     * Create a new instance of a Fragment with the given class name.  This is the same as calling its empty constructor.
+     *
+     * @param context       context.
+     * @param fragmentClass class of fragment.
+     * @param <T>           subclass of {@link NoFragment}.
+     * @return new instance.
+     * @deprecated In {@code Activity} with {@link CompatActivity#fragment(Class)} instead;
+     * in the {@code Fragment} width {@link #fragment(Class)} instead.
+     */
+    @Deprecated
     public static <T extends NoFragment> T instantiate(Context context, Class<T> fragmentClass) {
         //noinspection unchecked
         return (T) instantiate(context, fragmentClass.getName(), null);
     }
 
+    /**
+     * Create a new instance of a Fragment with the given class name.  This is the same as calling its empty constructor.
+     *
+     * @param context       context.
+     * @param fragmentClass class of fragment.
+     * @param bundle        argument.
+     * @param <T>           subclass of {@link NoFragment}.
+     * @return new instance.
+     * @deprecated In {@code Activity} with {@link CompatActivity#fragment(Class, Bundle)} instead;
+     * in the {@code Fragment} width {@link #fragment(Class, Bundle)} instead.
+     */
+    @Deprecated
     public static <T extends NoFragment> T instantiate(Context context, Class<T> fragmentClass, Bundle bundle) {
         //noinspection unchecked
         return (T) instantiate(context, fragmentClass.getName(), bundle);
+    }
+
+    /**
+     * Create a new instance of a Fragment with the given class name.  This is the same as calling its empty constructor.
+     *
+     * @param fragmentClass class of fragment.
+     * @param <T>           subclass of {@link NoFragment}.
+     * @return new instance.
+     */
+    public final <T extends NoFragment> T fragment(Class<T> fragmentClass) {
+        //noinspection unchecked
+        return (T) instantiate(getContext(), fragmentClass.getName(), null);
+    }
+
+    /**
+     * Create a new instance of a Fragment with the given class name.  This is the same as calling its empty constructor.
+     *
+     * @param fragmentClass class of fragment.
+     * @param bundle        argument.
+     * @param <T>           subclass of {@link NoFragment}.
+     * @return new instance.
+     */
+    public final <T extends NoFragment> T fragment(Class<T> fragmentClass, Bundle bundle) {
+        //noinspection unchecked
+        return (T) instantiate(getContext(), fragmentClass.getName(), bundle);
     }
 
     /**
@@ -300,13 +348,39 @@ public class NoFragment extends Fragment {
     }
 
     /**
-     * Show a fragment.
+     * Show a fragment for result.
+     *
+     * @param clazz       fragment to display.
+     * @param requestCode requestCode.
+     * @param <T>         {@link NoFragment}.
+     * @deprecated use {@link #startFragmentForResult(Class, int)} instead.
+     */
+    @Deprecated
+    public final <T extends NoFragment> void startFragmentForResquest(Class<T> clazz, int requestCode) {
+        startFragmentForResult(clazz, requestCode);
+    }
+
+    /**
+     * Show a fragment for result.
+     *
+     * @param targetFragment fragment to display.
+     * @param requestCode    requestCode.
+     * @param <T>            {@link NoFragment}.
+     * @deprecated use {@link #startFragmentForResult(Class, int)} instead.
+     */
+    @Deprecated
+    public final <T extends NoFragment> void startFragmentForResquest(T targetFragment, int requestCode) {
+        startFragmentForResult(targetFragment, requestCode);
+    }
+
+    /**
+     * Show a fragment for result.
      *
      * @param clazz       fragment to display.
      * @param requestCode requestCode.
      * @param <T>         {@link NoFragment}.
      */
-    public final <T extends NoFragment> void startFragmentForResquest(Class<T> clazz, int requestCode) {
+    public final <T extends NoFragment> void startFragmentForResult(Class<T> clazz, int requestCode) {
         try {
             NoFragment targetFragment = clazz.newInstance();
             startFragment(targetFragment, true, requestCode);
@@ -316,13 +390,13 @@ public class NoFragment extends Fragment {
     }
 
     /**
-     * Show a fragment.
+     * Show a fragment for result.
      *
      * @param targetFragment fragment to display.
      * @param requestCode    requestCode.
      * @param <T>            {@link NoFragment}.
      */
-    public final <T extends NoFragment> void startFragmentForResquest(T targetFragment, int requestCode) {
+    public final <T extends NoFragment> void startFragmentForResult(T targetFragment, int requestCode) {
         startFragment(targetFragment, true, requestCode);
     }
 

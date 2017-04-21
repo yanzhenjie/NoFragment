@@ -17,6 +17,8 @@ package com.yanzhenjie.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -28,12 +30,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * <p>Must extends CompatActivity.</p>
  * Created by Yan Zhenjie on 2017/1/13.
  */
 public abstract class CompatActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_INVALID = -1;
 
+    private FragmentManager mFManager;
     private AtomicInteger mAtomicInteger = new AtomicInteger();
     private List<NoFragment> mFragmentStack = new ArrayList<>();
     private Map<NoFragment, FragmentStackEntity> mFragmentEntityMap = new HashMap<>();
@@ -47,6 +51,22 @@ public abstract class CompatActivity extends AppCompatActivity {
         @ResultCode
         int resultCode = RESULT_CANCELED;
         Bundle result = null;
+    }
+
+    public final <T extends NoFragment> T fragment(Class<T> fragmentClass) {
+        //noinspection unchecked
+        return (T) Fragment.instantiate(this, fragmentClass.getName());
+    }
+
+    public final <T extends NoFragment> T fragment(Class<T> fragmentClass, Bundle bundle) {
+        //noinspection unchecked
+        return (T) Fragment.instantiate(this, fragmentClass.getName(), bundle);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFManager = getSupportFragmentManager();
     }
 
     /**
@@ -100,13 +120,39 @@ public abstract class CompatActivity extends AppCompatActivity {
     }
 
     /**
-     * Show a fragment.
+     * Show a fragment for result.
+     *
+     * @param clazz       fragment to display.
+     * @param requestCode requestCode.
+     * @param <T>         {@link NoFragment}.
+     * @deprecated use {@link #startFragmentForResult(Class, int)} instead.
+     */
+    @Deprecated
+    public final <T extends NoFragment> void startFragmentForResquest(Class<T> clazz, int requestCode) {
+        startFragmentForResult(clazz, requestCode);
+    }
+
+    /**
+     * Show a fragment for result.
+     *
+     * @param targetFragment fragment to display.
+     * @param requestCode    requestCode.
+     * @param <T>            {@link NoFragment}.
+     * @deprecated use {@link #startFragmentForResult(NoFragment, int)} instead.
+     */
+    @Deprecated
+    public final <T extends NoFragment> void startFragmentForResquest(T targetFragment, int requestCode) {
+        startFragmentForResult(targetFragment, requestCode);
+    }
+
+    /**
+     * Show a fragment for result.
      *
      * @param clazz       fragment to display.
      * @param requestCode requestCode.
      * @param <T>         {@link NoFragment}.
      */
-    public <T extends NoFragment> void startFragmentForResquest(Class<T> clazz, int requestCode) {
+    public final <T extends NoFragment> void startFragmentForResult(Class<T> clazz, int requestCode) {
         if (requestCode == REQUEST_CODE_INVALID)
             throw new IllegalArgumentException("The requestCode must be positive integer.");
         try {
@@ -118,13 +164,13 @@ public abstract class CompatActivity extends AppCompatActivity {
     }
 
     /**
-     * Show a fragment.
+     * Show a fragment for result.
      *
      * @param targetFragment fragment to display.
      * @param requestCode    requestCode.
      * @param <T>            {@link NoFragment}.
      */
-    public <T extends NoFragment> void startFragmentForResquest(T targetFragment, int requestCode) {
+    public final <T extends NoFragment> void startFragmentForResult(T targetFragment, int requestCode) {
         if (requestCode == REQUEST_CODE_INVALID)
             throw new IllegalArgumentException("The requestCode must be positive integer.");
         startFragment(null, targetFragment, true, requestCode);
@@ -139,15 +185,14 @@ public abstract class CompatActivity extends AppCompatActivity {
      * @param requestCode    requestCode.
      * @param <T>            {@link NoFragment}.
      */
-    public <T extends NoFragment> void startFragment(T nowFragment, T targetFragment, boolean stickyStack, int
+    protected final <T extends NoFragment> void startFragment(T nowFragment, T targetFragment, boolean stickyStack, int
             requestCode) {
         FragmentStackEntity fragmentStackEntity = new FragmentStackEntity();
         fragmentStackEntity.isSticky = stickyStack;
         fragmentStackEntity.requestCode = requestCode;
         targetFragment.setStackEntity(fragmentStackEntity);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = mFManager.beginTransaction();
         if (nowFragment != null) {
             if (mFragmentEntityMap.get(nowFragment).isSticky) {
                 nowFragment.onPause();
@@ -159,7 +204,7 @@ public abstract class CompatActivity extends AppCompatActivity {
                 mFragmentStack.remove(nowFragment);
                 mFragmentEntityMap.remove(nowFragment);
 
-                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction = mFManager.beginTransaction();
             }
         }
 
@@ -175,26 +220,24 @@ public abstract class CompatActivity extends AppCompatActivity {
     /**
      * When the back off.
      */
-    private boolean onBackStackFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+    protected final boolean onBackStackFragment() {
         if (mFragmentStack.size() > 1) {
-            fragmentManager.popBackStack();
+            mFManager.popBackStack();
             NoFragment inFragment = mFragmentStack.get(mFragmentStack.size() - 2);
 
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = mFManager.beginTransaction();
             fragmentTransaction.show(inFragment);
             fragmentTransaction.commit();
 
             NoFragment outFragment = mFragmentStack.get(mFragmentStack.size() - 1);
             inFragment.onResume();
 
-            FragmentStackEntity fragmentStackEntity = mFragmentEntityMap.get(outFragment);
+            FragmentStackEntity stackEntity = mFragmentEntityMap.get(outFragment);
             mFragmentStack.remove(outFragment);
             mFragmentEntityMap.remove(outFragment);
 
-            if (fragmentStackEntity.requestCode != REQUEST_CODE_INVALID) {
-                inFragment.onFragmentResult(fragmentStackEntity.requestCode, fragmentStackEntity.resultCode,
-                        fragmentStackEntity.result);
+            if (stackEntity.requestCode != REQUEST_CODE_INVALID) {
+                inFragment.onFragmentResult(stackEntity.requestCode, stackEntity.resultCode, stackEntity.result);
             }
             return true;
         }
