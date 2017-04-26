@@ -179,42 +179,45 @@ public abstract class CompatActivity extends AppCompatActivity {
     /**
      * Show a fragment.
      *
-     * @param nowFragment    Now show fragment, can be null.
-     * @param targetFragment fragment to display.
-     * @param stickyStack    sticky back stack.
-     * @param requestCode    requestCode.
-     * @param <T>            {@link NoFragment}.
+     * @param thisFragment Now show fragment, can be null.
+     * @param thatFragment fragment to display.
+     * @param stickyStack  sticky back stack.
+     * @param requestCode  requestCode.
+     * @param <T>          {@link NoFragment}.
      */
-    protected final <T extends NoFragment> void startFragment(T nowFragment, T targetFragment, boolean stickyStack, int
-            requestCode) {
-        FragmentStackEntity fragmentStackEntity = new FragmentStackEntity();
-        fragmentStackEntity.isSticky = stickyStack;
-        fragmentStackEntity.requestCode = requestCode;
-        targetFragment.setStackEntity(fragmentStackEntity);
-
+    protected final <T extends NoFragment> void startFragment(T thisFragment, T thatFragment,
+                                                              boolean stickyStack, int requestCode) {
         FragmentTransaction fragmentTransaction = mFManager.beginTransaction();
-        if (nowFragment != null) {
-            if (mFragmentEntityMap.get(nowFragment).isSticky) {
-                nowFragment.onPause();
-                nowFragment.onStop();
-                fragmentTransaction.hide(nowFragment);
-            } else {
-                fragmentTransaction.remove(nowFragment);
-                fragmentTransaction.commit();
-                mFragmentStack.remove(nowFragment);
-                mFragmentEntityMap.remove(nowFragment);
+        if (thisFragment != null) {
+            FragmentStackEntity thisStackEntity = mFragmentEntityMap.get(thisFragment);
+            if (thisStackEntity != null) {
+                if (thisStackEntity.isSticky) {
+                    thisFragment.onPause();
+                    thisFragment.onStop();
+                    fragmentTransaction.hide(thisFragment);
+                } else {
+                    fragmentTransaction.remove(thisFragment).commit();
+                    fragmentTransaction.commitNow();
+                    fragmentTransaction = mFManager.beginTransaction();
 
-                fragmentTransaction = mFManager.beginTransaction();
+                    mFragmentEntityMap.remove(thisFragment);
+                    mFragmentStack.remove(thisFragment);
+                }
             }
         }
 
-        String fragmentTag = targetFragment.getClass().getSimpleName() + mAtomicInteger.incrementAndGet();
-        fragmentTransaction.add(fragmentLayoutId(), targetFragment, fragmentTag);
+        String fragmentTag = thatFragment.getClass().getSimpleName() + mAtomicInteger.incrementAndGet();
+        fragmentTransaction.add(fragmentLayoutId(), thatFragment, fragmentTag);
         fragmentTransaction.addToBackStack(fragmentTag);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commit();
 
-        mFragmentStack.add(targetFragment);
-        mFragmentEntityMap.put(targetFragment, fragmentStackEntity);
+        FragmentStackEntity fragmentStackEntity = new FragmentStackEntity();
+        fragmentStackEntity.isSticky = stickyStack;
+        fragmentStackEntity.requestCode = requestCode;
+        thatFragment.setStackEntity(fragmentStackEntity);
+        mFragmentEntityMap.put(thatFragment, fragmentStackEntity);
+
+        mFragmentStack.add(thatFragment);
     }
 
     /**
